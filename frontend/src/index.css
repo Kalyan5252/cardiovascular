@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #ec4899; /* Pink-500/Rose-500 equivalent - modern & vibrant */
+  --color-primary-dark: #be185d;
+  --color-primary-light: #fce7f3;
+
+  --color-secondary: #6366f1; /* Indigo - Trust & Tech */
+
+  --color-surface: #ffffff;
+  --color-background: #f8fafc; /* Slate-50 */
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* Custom Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.modern-card {
+  @apply bg-white rounded-2xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] border border-gray-100/50 transition-all duration-300;
+}
+
+.modern-card:hover {
+  @apply shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)] -translate-y-1;
+}
+
+.input-modern {
+  @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 
+  focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white 
+  outline-none transition-all duration-200;
+}
+
+.btn-primary {
+  @apply px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-pink-600 
+  text-white font-semibold shadow-lg shadow-primary/30 
+  hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0
+  transition-all duration-200;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased font-sans;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(236, 72, 153, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.03) 0px, transparent 50%);
+  background-attachment: fixed;
+}

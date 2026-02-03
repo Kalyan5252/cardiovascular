@@ -1,0 +1,80 @@
+export const FIELD_METADATA = [
+  { name: 'age', label: 'Age', type: 'number', placeholder: 'Enter age' },
+  { name: 'sex', label: 'Sex', type: 'select', options: ['Male', 'Female'] },
+  {
+    name: 'chest_pain_type',
+    label: 'Chest Pain Type',
+    type: 'select',
+    options: [
+      'Typical angina',
+      'Atypical angina',
+      'Non-anginal pain',
+      'Asymptomatic',
+    ],
+  },
+  {
+    name: 'resting_blood_pressure',
+    label: 'Resting Blood Pressure',
+    type: 'number',
+    placeholder: 'mm Hg',
+  },
+  {
+    name: 'cholestoral',
+    label: 'Cholesterol',
+    type: 'number',
+    placeholder: 'mg/dl',
+  },
+  {
+    name: 'fasting_blood_sugar',
+    label: 'Fasting Blood Sugar',
+    type: 'select',
+    options: ['Greater than 120 mg/ml', 'Lower than 120 mg/ml'],
+  },
+  {
+    name: 'rest_ecg',
+    label: 'Resting ECG Results',
+    type: 'select',
+    options: [
+      'Normal',
+      'ST-T wave abnormality',
+      'Left ventricular hypertrophy',
+    ],
+  },
+  {
+    name: 'Max_heart_rate',
+    label: 'Max Heart Rate',
+    type: 'number',
+    placeholder: 'bpm',
+  },
+  {
+    name: 'exercise_induced_angina',
+    label: 'Exercise Induced Angina',
+    type: 'select',
+    options: ['Yes', 'No'],
+  },
+  {
+    name: 'oldpeak',
+    label: 'Oldpeak (ST depression)',
+    type: 'number',
+    step: '0.1',
+    placeholder: 'e.g. 2.3',
+  },
+  {
+    name: 'slope',
+    label: 'Slope of Peak Exercise ST',
+    type: 'select',
+    options: ['Upsloping', 'Flat', 'Downsloping'],
+  },
+  {
+    name: 'vessels_colored_by_flourosopy',
+    label: 'Number of Major Vessels (0-4)',
+    type: 'select',
+    options: ['0', '1', '2', '3', '4'],
+  },
+  {
+    name: 'thalassemia',
+    label: 'Thalassemia',
+    type: 'select',
+    options: ['Normal', 'Fixed defect', 'Reversable defect'],
+  },
+];
