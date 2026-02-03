@@ -108,6 +108,8 @@ The model expects the following clinical features:
 12. **Vessels**: Number of major vessels (0-4).
 13. **Thalassemia**: Normal, Fixed Defect, Reversable Defect.
 
+## Mr.K
+
 ## ⚠️ Notes
 
 - Ensure `models/model.h5` and `models/scaler.pkl` are present in the `backend/` directory for predictions to work.
