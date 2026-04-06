@@ -188,10 +188,21 @@ async def predict_batch(file: UploadFile = File(...)):
         # We need to ensure we handle the mapping per row or batch. 
         # preprocessing function handles dataframe.
         
-        processed_data = preprocess_input(df, scaler) 
+        df_input = df.copy()
+        
+        for col, mapping in binary_mapping.items():
+            if col in df_input.columns:
+                df_input[col] = df_input[col].map(mapping)
+                
+        # Drop target if exists in csv
+        if "target" in df_input.columns:
+            df_target = df_input["target"]
+            df_input = df_input.drop("target", axis=1)
+
+        X_input = preprocessor.transform(df_input)
         
         if model:
-            preds = model.predict(processed_data)
+            preds = model.predict(X_input)
             probabilities = [float(p[0]) for p in preds]
         else:
             raise HTTPException(status_code=503, detail="Model and Scaler not loaded. Service unavailable.")
