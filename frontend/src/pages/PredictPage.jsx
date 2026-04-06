@@ -39,9 +39,7 @@ const PredictPage = () => {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await api.post('/predict/batch', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await api.post('/predict/batch', formData);
       setBatchResults(response.data.results);
     } catch (err) {
       setError('Batch analysis failed. Ensure the file format is correct.');
@@ -204,10 +202,18 @@ const PredictPage = () => {
                                 #{idx + 1}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-medium">
-                                {row.age || '-'}
+                                {row.age !== undefined
+                                  ? row.age
+                                  : row.Age !== undefined
+                                    ? row.Age
+                                    : '-'}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
-                                {row.sex || '-'}
+                                {row.sex !== undefined
+                                  ? row.sex
+                                  : row.Sex !== undefined
+                                    ? row.Sex
+                                    : '-'}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm">
                                 <div className="flex items-center gap-2">
@@ -220,7 +226,7 @@ const PredictPage = () => {
                                     ></div>
                                   </div>
                                   <span className="font-medium text-slate-600">
-                                    {row.probability
+                                    {row.probability !== undefined
                                       ? (row.probability * 100).toFixed(0) + '%'
                                       : '-'}
                                   </span>
