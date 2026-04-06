@@ -5,12 +5,15 @@ import PredictionForm from '../components/PredictionForm';
 import FileUpload from '../components/FileUpload';
 import ResultCard from '../components/ResultCard';
 import api from '../lib/api';
+import axios from 'axios';
 
 const PredictPage = () => {
   const [activeTab, setActiveTab] = useState('manual');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [batchResults, setBatchResults] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [error, setError] = useState(null);
 
   const handleManualSubmit = async (data) => {
@@ -39,8 +42,13 @@ const PredictPage = () => {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await api.post('/predict/batch', formData);
+      const response = await axios.post(
+        `${api.defaults.baseURL.replace(/\/$/, '')}/predict/batch`,
+        formData,
+        { headers: { 'ngrok-skip-browser-warning': 'true' } },
+      );
       setBatchResults(response.data.results);
+      setCurrentPage(1);
     } catch (err) {
       setError('Batch analysis failed. Ensure the file format is correct.');
       console.error(err);
@@ -193,66 +201,107 @@ const PredictPage = () => {
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-slate-50">
-                          {batchResults.slice(0, 10).map((row, idx) => (
-                            <tr
-                              key={idx}
-                              className="hover:bg-slate-50/80 transition-colors"
-                            >
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-mono">
-                                #{idx + 1}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-medium">
-                                {row.age !== undefined
-                                  ? row.age
-                                  : row.Age !== undefined
-                                    ? row.Age
-                                    : '-'}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
-                                {row.sex !== undefined
-                                  ? row.sex
-                                  : row.Sex !== undefined
-                                    ? row.Sex
-                                    : '-'}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                <div className="flex items-center gap-2">
-                                  <div className="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                    <div
-                                      className={`h-full rounded-full ${row.probability > 0.5 ? 'bg-red-500' : 'bg-green-500'}`}
-                                      style={{
-                                        width: `${(row.probability || 0) * 100}%`,
-                                      }}
-                                    ></div>
-                                  </div>
-                                  <span className="font-medium text-slate-600">
-                                    {row.probability !== undefined
-                                      ? (row.probability * 100).toFixed(0) + '%'
+                          {batchResults
+                            .slice(
+                              (currentPage - 1) * itemsPerPage,
+                              currentPage * itemsPerPage,
+                            )
+                            .map((row, idx) => (
+                              <tr
+                                key={idx}
+                                className="hover:bg-slate-50/80 transition-colors"
+                              >
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-mono">
+                                  #{(currentPage - 1) * itemsPerPage + idx + 1}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-medium">
+                                  {row.age !== undefined
+                                    ? row.age
+                                    : row.Age !== undefined
+                                      ? row.Age
                                       : '-'}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                                  {row.sex !== undefined
+                                    ? row.sex
+                                    : row.Sex !== undefined
+                                      ? row.Sex
+                                      : '-'}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                      <div
+                                        className={`h-full rounded-full ${row.probability > 0.5 ? 'bg-red-500' : 'bg-green-500'}`}
+                                        style={{
+                                          width: `${(row.probability || 0) * 100}%`,
+                                        }}
+                                      ></div>
+                                    </div>
+                                    <span className="font-medium text-slate-600">
+                                      {row.probability !== undefined
+                                        ? (row.probability * 100).toFixed(0) +
+                                          '%'
+                                        : '-'}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span
+                                    className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${
+                                      row.prediction === 1
+                                        ? 'bg-red-100 text-red-600'
+                                        : 'bg-green-100 text-green-600'
+                                    }`}
+                                  >
+                                    {row.prediction === 1
+                                      ? 'HIGH RISK'
+                                      : 'LOW RISK'}
                                   </span>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span
-                                  className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${
-                                    row.prediction === 1
-                                      ? 'bg-red-100 text-red-600'
-                                      : 'bg-green-100 text-green-600'
-                                  }`}
-                                >
-                                  {row.prediction === 1
-                                    ? 'HIGH RISK'
-                                    : 'LOW RISK'}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </table>
                     </div>
-                    {batchResults.length > 10 && (
-                      <div className="p-4 text-center text-sm text-slate-500 bg-slate-50 border-t border-slate-100">
-                        Showing first 10 of {batchResults.length} records
+                    {batchResults.length > itemsPerPage && (
+                      <div className="p-4 flex items-center justify-between border-t border-slate-100 bg-slate-50">
+                        <span className="text-sm text-slate-500">
+                          Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
+                          {Math.min(
+                            currentPage * itemsPerPage,
+                            batchResults.length,
+                          )}{' '}
+                          of {batchResults.length} records
+                        </span>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() =>
+                              setCurrentPage((p) => Math.max(1, p - 1))
+                            }
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 rounded-md bg-white border border-slate-200 text-sm font-medium text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                          >
+                            Previous
+                          </button>
+                          <button
+                            onClick={() =>
+                              setCurrentPage((p) =>
+                                Math.min(
+                                  Math.ceil(batchResults.length / itemsPerPage),
+                                  p + 1,
+                                ),
+                              )
+                            }
+                            disabled={
+                              currentPage >=
+                              Math.ceil(batchResults.length / itemsPerPage)
+                            }
+                            className="px-3 py-1 rounded-md bg-white border border-slate-200 text-sm font-medium text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                          >
+                            Next
+                          </button>
+                        </div>
                       </div>
                     )}
                   </motion.div>
