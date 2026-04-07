@@ -13,7 +13,7 @@ import { cn } from '../lib/utils';
 const Sidebar = () => {
   const navItems = [
     { to: '/', icon: Activity, label: 'Predict Risk' },
-    { to: '/accuracy', icon: ImageIcon, label: 'Model Accuracy' },
+    // { to: '/accuracy', icon: ImageIcon, label: 'Model Accuracy' },
     { to: '/details', icon: Brain, label: 'Model Details' },
   ];
 
